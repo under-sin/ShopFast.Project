@@ -10,8 +10,8 @@ namespace Web.API.Endpoints;
 public class Users : ICarterModule {
     public void AddRoutes(IEndpointRouteBuilder app) {
         app.MapPost("/users", async ([FromServices] IRegisterUser useCase, [FromBody] RegisterUserRequestJson request) => {
-            var result = await useCase.Execute(request);
-            return Results.Created(string.Empty, result.Name);
+            var response = await useCase.Execute(request);
+            return Results.Created(string.Empty, response);
         });
     }
 }

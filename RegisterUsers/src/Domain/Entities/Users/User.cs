@@ -5,11 +5,10 @@ using Addr = Domain.Entities.Address;
 namespace Domain.Entities.Users;
 
 public class User : BaseEntity {
-    public User(UserId id, string name, string email, string password, AddressId addressId) {
+    public User(UserId id, string name, string email, AddressId addressId) {
         Id = id;
         Name = name;
         Email = email;
-        Password = password;
         AddressId = addressId;
     }
 
@@ -27,5 +26,9 @@ public class User : BaseEntity {
         Name = name;
         Email = email;
         Password = password;
+    }
+
+    public void SetEncryptedPassword(string password) {
+        this.Password = password;
     }
 }

@@ -31,7 +31,6 @@ public class RegisterUserRequestJson {
             userId,
             Name,
             Email,
-            Password,
             addressId
         );
 

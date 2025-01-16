@@ -14,30 +14,34 @@ public class RegisterUser : IRegisterUser {
     private readonly IAddressRepository _addressRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<RegisterUserRequestJson> _validator;
+    private readonly IPasswordEncripter _passwordEncripter;
 
     public RegisterUser(
         IUserRepository userRepository,
         IAddressRepository addressRepository,
         IUnitOfWork unitOfWork,
-        IValidator<RegisterUserRequestJson> validator)
+        IValidator<RegisterUserRequestJson> validator,
+        IPasswordEncripter passwordEncripter)
     {
         _userRepository = userRepository;
         _addressRepository = addressRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
+        _passwordEncripter = passwordEncripter;
     }
 
     public async Task<RegisterUserResponseJson> Execute(RegisterUserRequestJson request) {
         await ValidateAsync(request);
         (User user, Address address) = request.ToUserAndAddress();
-        
-        // criptografar senha
+
+        var encryptedPassword = _passwordEncripter.Encrypt(user.Password);
+        user.SetEncryptedPassword(encryptedPassword);
         
         await _addressRepository.AddAsync(address);
         await _userRepository.AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
 
-        return new RegisterUserResponseJson { Name = user.Name };
+        return new RegisterUserResponseJson { Name = user.Name, Email = user.Email };
     }
 
     public async Task ValidateAsync(RegisterUserRequestJson request) {
