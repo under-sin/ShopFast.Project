@@ -4,6 +4,7 @@ using Communication.Responses;
 using Domain.Entities.Users;
 using Domain.Entities.Address;
 using Application.Data;
+using FluentValidation.Results;
 
 namespace Application.Cases.Users.Register;
 
@@ -19,24 +20,26 @@ public class RegisterUser : IRegisterUser {
     }
 
     public async Task<RegisterUserResponseJson> Execute(RegisterUserRequestJson request) {
-        // Validate(request);
+        await ValidateAsync(request);
         (User user, Address address) = request.ToUserAndAddress();
         
         // criptografar senha
         
         await _addressRepository.AddAsync(address);
         await _userRepository.AddAsync(user);
-
         await _unitOfWork.SaveChangesAsync();
 
         return new RegisterUserResponseJson { Name = user.Name };
     }
 
-    public void Validate(RegisterUserRequestJson request) {
+    public async Task ValidateAsync(RegisterUserRequestJson request) {
         var validation = new RegisterUserValidation();
         var result = validation.Validate(request);
 
-        // var emailExists = await _userRepository.ExistActiveUserWithEmail(request.Email);
+        var emailExists = await _userRepository.EmailExistsAsync(request.Email);
+        if (emailExists) {
+            result.Errors.Add(new ValidationFailure(string.Empty, "E-mail já cadastrado na base de dados"));
+        }
 
         if (!result.IsValid) {
             var errorMessages = result.Errors

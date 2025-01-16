@@ -14,6 +14,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User> {
             id => new UserId(id)
         );
 
+        // necessário configurar o AddressId para não duplicar a FK
         builder.Property(u => u.AddressId).HasConversion(
             addressId => addressId.Value,
             id => new AddressId(id)

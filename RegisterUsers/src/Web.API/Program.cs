@@ -1,31 +1,31 @@
 using Carter;
-using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Application;
+using Microsoft.EntityFrameworkCore;
+using Web.API.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddCarter();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-app.UseExceptionHandler(exceptionHandleApp 
-    => exceptionHandleApp.Run(async context 
-        => await Results.Problem().ExecuteAsync(context)));
-
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 app.MapCarter();
+app.UseExceptionHandler();
 
 MigrateDatabase();
 
