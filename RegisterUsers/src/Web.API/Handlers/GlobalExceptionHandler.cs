@@ -26,6 +26,6 @@ public class GlobalExceptionHandler : IExceptionHandler {
     private static async Task UnkwnonExceptionHandler(Exception exception, HttpContext httpContext, CancellationToken cancellationToken) {
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         await httpContext.Response
-            .WriteAsJsonAsync(new ResponseErrorJson("Unkwnon Internal Error."), cancellationToken);
+            .WriteAsJsonAsync(new ResponseErrorJson(["Unkwnon Internal Error.", exception.Message]), cancellationToken);
     }
 }

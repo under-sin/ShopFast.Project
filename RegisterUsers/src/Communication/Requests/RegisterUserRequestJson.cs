@@ -18,7 +18,7 @@ public class RegisterUserRequestJson {
             addressId,
             Address.ZipCode,
             Address.Street,
-            Address.Complement,
+            Address.Complement!,
             Address.Neighborhood,
             Address.Number,
             Address.City,

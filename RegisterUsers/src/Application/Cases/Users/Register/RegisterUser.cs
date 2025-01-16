@@ -5,6 +5,7 @@ using Domain.Entities.Users;
 using Domain.Entities.Address;
 using Application.Data;
 using FluentValidation.Results;
+using FluentValidation;
 
 namespace Application.Cases.Users.Register;
 
@@ -12,11 +13,18 @@ public class RegisterUser : IRegisterUser {
     private readonly IUserRepository _userRepository;
     private readonly IAddressRepository _addressRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IValidator<RegisterUserRequestJson> _validator;
 
-    public RegisterUser(IUserRepository userRepository, IAddressRepository addressRepository, IUnitOfWork unitOfWork) {
+    public RegisterUser(
+        IUserRepository userRepository,
+        IAddressRepository addressRepository,
+        IUnitOfWork unitOfWork,
+        IValidator<RegisterUserRequestJson> validator)
+    {
         _userRepository = userRepository;
         _addressRepository = addressRepository;
         _unitOfWork = unitOfWork;
+        _validator = validator;
     }
 
     public async Task<RegisterUserResponseJson> Execute(RegisterUserRequestJson request) {
@@ -33,8 +41,7 @@ public class RegisterUser : IRegisterUser {
     }
 
     public async Task ValidateAsync(RegisterUserRequestJson request) {
-        var validation = new RegisterUserValidation();
-        var result = validation.Validate(request);
+        var result = _validator.Validate(request);
 
         var emailExists = await _userRepository.EmailExistsAsync(request.Email);
         if (emailExists) {

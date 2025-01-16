@@ -1,10 +1,11 @@
+using Application.Cases.Addresses;
 using Communication.Requests;
 using FluentValidation;
 
 namespace Application.Cases.Users.Register;
 
-public class RegisterUserValidation : AbstractValidator<RegisterUserRequestJson> {
-    public RegisterUserValidation() {
+public class RegisterUserValidator : AbstractValidator<RegisterUserRequestJson> {
+    public RegisterUserValidator() {
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage("Name is required");
@@ -17,7 +18,11 @@ public class RegisterUserValidation : AbstractValidator<RegisterUserRequestJson>
             .GreaterThanOrEqualTo(6)
             .WithMessage("Password must have at least 6 characters");
 
-        // validar endereço
+        // usa o validation do address no set validator
+        RuleFor(x => x.Address)
+            .NotEmpty()
+            .WithMessage("Address is required")
+            .SetValidator(new AddressRequestValidator());
 
         When(user => !string.IsNullOrEmpty(user.Email), () => {
             RuleFor(x => x.Email)
