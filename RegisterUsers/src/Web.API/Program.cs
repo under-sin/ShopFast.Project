@@ -1,8 +1,8 @@
 using Carter;
 using Persistence;
 using Application;
-using Microsoft.EntityFrameworkCore;
 using Web.API.Handlers;
+using Web.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,18 +21,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigration();
 }
 
 app.UseHttpsRedirection();
 app.MapCarter();
 app.UseExceptionHandler();
 
-MigrateDatabase();
-
 app.Run();
-
-void MigrateDatabase() {
-    var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate();
-}
