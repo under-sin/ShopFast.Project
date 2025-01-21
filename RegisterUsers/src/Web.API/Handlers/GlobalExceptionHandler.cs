@@ -21,6 +21,11 @@ public class GlobalExceptionHandler : IExceptionHandler {
             await httpContext.Response
                 .WriteAsJsonAsync(new ResponseErrorJson(onErrorValidationException.ErrorMessages), cancellationToken);
         }
+
+        if (customException is NotFoundException notFoundException) {
+            httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            await httpContext.Response.WriteAsJsonAsync(new ResponseErrorJson(notFoundException.Message), cancellationToken);
+        }
     }
 
     private static async Task UnkwnonExceptionHandler(Exception exception, HttpContext httpContext, CancellationToken cancellationToken) {

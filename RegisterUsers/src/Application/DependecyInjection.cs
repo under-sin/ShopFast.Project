@@ -1,3 +1,4 @@
+using Application.Cases.Users.Profile.GetUserProfile;
 using Application.Cases.Users.Register;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,11 +13,10 @@ public static class DependecyInjection {
 
     private static void AddCases(IServiceCollection services) {
         services.AddScoped<IRegisterUser, RegisterUser>();
+        services.AddScoped<IGetUserProfile, GetUserProfile>();
     }
 
     private static void AddFluentValidation(IServiceCollection services) {
         services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
     }
-
-    // password encripter
 }

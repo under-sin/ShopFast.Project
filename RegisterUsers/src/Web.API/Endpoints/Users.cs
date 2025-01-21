@@ -1,3 +1,4 @@
+using Application.Cases.Users.Profile.GetUserProfile;
 using Application.Cases.Users.Register;
 using Carter;
 using Communication.Requests;
@@ -12,6 +13,11 @@ public class Users : ICarterModule {
         app.MapPost("/users", async ([FromServices] IRegisterUser useCase, [FromBody] RegisterUserRequestJson request) => {
             var response = await useCase.Execute(request);
             return Results.Created(string.Empty, response);
+        });
+
+        app.MapGet("/users/{id}", async ([FromServices] IGetUserProfile useCase, Guid id) => {
+            var response = await useCase.Execute(id);
+            return Results.Ok(response);
         });
     }
 }
