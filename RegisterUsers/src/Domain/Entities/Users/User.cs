@@ -21,14 +21,16 @@ public class User : BaseEntity {
     // propriedade de navegação
     public Addr.Address Address { get; set; } = default!;
 
-    public void Update(UserId id, string name, string email, string password) {
-        Id = id;
+    public void Update(string name, string email) {
         Name = name;
         Email = email;
-        Password = password;
     }
 
     public void SetEncryptedPassword(string password) {
         this.Password = password;
+    }
+    
+    public void ActiveUser(bool active) {
+        this.Active = active;
     }
 }

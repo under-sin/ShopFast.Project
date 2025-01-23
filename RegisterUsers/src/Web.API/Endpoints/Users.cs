@@ -1,7 +1,10 @@
+using Application.Cases.Users.Inactive;
 using Application.Cases.Users.Profile.GetUserProfile;
+using Application.Cases.Users.Profile.UpdateUserProfile;
 using Application.Cases.Users.Register;
 using Carter;
 using Communication.Requests;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.API.Endpoints;
@@ -22,6 +25,16 @@ public class Users : CarterModule {
         app.MapGet("/{id}", async ([FromServices] IGetUserProfile useCase, Guid id) => {
             var response = await useCase.Execute(id);
             return Results.Ok(response);
+        });
+
+        app.MapPut("/{id}", async([FromServices] IUpdateUserProfile useCase, [FromBody] UpdateUserRequestJson request, Guid id) => {
+            await useCase.Execute(id, request);
+            return Results.NoContent();
+        });
+
+        app.MapDelete("/{id}", async([FromServices] IInactiveUser useCase, Guid id) => {
+            await useCase.Execute(id);
+            return Results.NoContent();
         });
     }
 }
