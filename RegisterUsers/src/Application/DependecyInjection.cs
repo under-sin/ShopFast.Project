@@ -1,3 +1,4 @@
+using Application.Cases.Addresses.Get;
 using Application.Cases.Users.Inactive;
 using Application.Cases.Users.Profile.GetUserProfile;
 using Application.Cases.Users.Profile.UpdateUserProfile;
@@ -18,6 +19,7 @@ public static class DependecyInjection {
         services.AddScoped<IGetUserProfile, GetUserProfile>();
         services.AddScoped<IInactiveUser, InactiveUser>();
         services.AddScoped<IUpdateUserProfile, UpdateUserProfile>();
+        services.AddScoped<IGetAddressViaCep, GetAddressViaCep>();
     }
 
     private static void AddFluentValidation(IServiceCollection services) {
